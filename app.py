@@ -23,51 +23,411 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for light background
+# Custom CSS for dark skeuomorphic UI
 st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap');
+        @import url('https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css');
+        @import url('https://unpkg.com/@phosphor-icons/web@2.0.3/src/fill/style.css');
+        
+        /* Main panels */
+        .main-panel {
+            background: linear-gradient(180deg, #1c1c21 0%, #16161a 100%);
+            border: 1px solid #27272c;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+        .main-panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .main-panel-title {
+            font-size: 20px; font-weight: 600; color: #f5f5f7; margin-bottom: 16px;
+        }
+        
+        /* Action cards exact match */
+        .action-card {
+            background: linear-gradient(180deg, #222227 0%, #1c1c21 100%);
+            border-radius: 16px;
+            border: 1px solid #2a2a30;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.02);
+            position: relative;
+        }
+        .card-blue::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent); }
+        .card-purple::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(139,92,246,0.5), transparent); }
+        .card-orange::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(249,115,22,0.5), transparent); }
+        .card-teal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(20,184,166,0.5), transparent); }
+        
+        .icon-wrap {
+            width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px;
+            background: linear-gradient(180deg, #18181b 0%, #1f1f24 100%);
+            border: 1px solid #000;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 8px rgba(0,0,0,0.5);
+        }
+        .icon-blue { color: #60a5fa; box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 12px rgba(59,130,246,0.15); }
+        .icon-purple { color: #a78bfa; box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 12px rgba(139,92,246,0.15); }
+        .icon-orange { color: #fb923c; box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 12px rgba(249,115,22,0.15); }
+        .icon-teal { color: #2dd4bf; box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 4px 12px rgba(20,184,166,0.15); }
+        
+        /* Activity progress bar */
+        .progress-box {
+            background: linear-gradient(180deg, #222227 0%, #1c1c21 100%);
+            border: 1px solid #2a2a30;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .progress-track {
+            height: 6px; background: #111114; border-radius: 3px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); margin-top: 15px; position: relative; overflow: visible;
+        }
+        .progress-fill-blue {
+            position: absolute; left: 0; top: 0; height: 100%; border-radius: 3px;
+            background: linear-gradient(90deg, #2563eb, #60a5fa); box-shadow: 0 0 12px rgba(96,165,250,0.6);
+        }
+        .progress-fill-purple {
+            position: absolute; left: 0; top: 0; height: 100%; border-radius: 3px;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa); box-shadow: 0 0 12px rgba(167,139,250,0.6);
+        }
+        
+
         :root {
-            --primary-color: #667eea;
-            --background-color: #f8f9fa;
-            --secondary-background-color: #ffffff;
-            --text-color: #333333;
+            --bg: #1a1a1c;
+            --panel-top: #27272c;
+            --panel-bot: #1e1e22;
+            --text: #e7e7ea;
+            --muted: #9a9aa3;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --orange: #f97316;
+            --teal: #14b8a6;
+            --red: #ef4444;
         }
-        
-        html, body {
-            background-color: #f8f9fa !important;
+
+        html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
+            background: #1a1a1c !important;
+            background-image: radial-gradient(1200px 800px at 50% -10%, #2b2b32 0%, #1a1a1c 45%, #111113 100%) !important;
+            color: var(--text) !important;
+            font-family: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        [data-testid="stAppViewContainer"] {
-            background-color: #f8f9fa !important;
+
+        .main, [data-testid="stMainBlockContainer"], section[data-testid="stVerticalBlock"] > div {
+            background: transparent !important;
+            color: var(--text) !important;
         }
-        
-        [data-testid="stSidebar"] {
-            background-color: #ffffff !important;
-        }
-        
-        .main {
-            background-color: #f8f9fa !important;
-        }
-        
+
         [data-testid="stMainBlockContainer"] {
-            background-color: #f8f9fa !important;
             padding-top: 2rem;
             padding-bottom: 2rem;
         }
-        
-        /* Streamlit default sections */
-        section[data-testid="stVerticalBlock"] > div {
-            background-color: #f8f9fa !important;
+
+        /* Sidebar */
+        [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bot) 100%) !important;
+            border-right: 1px solid #0b0b0d !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5) !important;
+        }
+        [data-testid="stSidebar"] > div:first-child {
+            background: transparent !important;
         }
 
-        /* ── Card click overlay ─────────────────────────────────────────
-           For every markdown card followed by a stButton sibling,
-           lift the button container up to sit exactly over the card.
-           The button is made transparent so the card art shows through.
-        ────────────────────────────────────────────────────────────────── */
+        /* Sidebar buttons → skeuomorphic nav items */
+        [data-testid="stSidebar"] [data-testid="stButton"] button {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05)) !important;
+            border: 1px solid transparent !important;
+            border-radius: 12px !important;
+            color: #b9b9c2 !important;
+            font-family: 'Geist', system-ui, sans-serif !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            text-align: left !important;
+            padding: 10px 12px !important;
+            transition: all 0.15s ease !important;
+            box-shadow: none !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stButton"] button:hover {
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.1)) !important;
+            color: #fff !important;
+            border-color: transparent !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stButton"] button:active,
+        [data-testid="stSidebar"] [data-testid="stButton"] button:focus {
+            background: linear-gradient(180deg, #2b2b31 0%, #1f1f24 100%) !important;
+            border-color: #0a0a0c !important;
+            color: #fff !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -1px 3px rgba(0,0,0,0.8), 0 2px 6px rgba(0,0,0,0.4) !important;
+        }
+
+        /* Sidebar text overrides */
+        [data-testid="stSidebar"] p, [data-testid="stSidebar"] span,
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2,
+        [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4 {
+            color: #e7e7ea !important;
+        }
+        [data-testid="stSidebar"] hr {
+            border-color: rgba(255,255,255,0.06) !important;
+        }
+        [data-testid="stSidebar"] .stMarkdown strong {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.08em !important;
+            color: #7d7d86 !important;
+        }
+
+        /* Emboss text effect */
+        .emboss {
+            text-shadow: 0 1px 0 rgba(255,255,255,0.05), 0 -1px 1px rgba(0,0,0,0.85) !important;
+        }
+
+        /* Skeuomorphic panel */
+        .skeuo-panel {
+            background: linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bot) 100%) !important;
+            border: 1px solid #0b0b0d !important;
+            border-radius: 24px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -2px 3px rgba(0,0,0,0.6), 0 20px 40px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.8) !important;
+            padding: 26px 28px !important;
+            margin-bottom: 20px !important;
+            position: relative;
+        }
+
+        /* Skeuomorphic raised */
+        .skeuo-raised {
+            background: linear-gradient(180deg, #30313a 0%, #23232a 100%) !important;
+            border: 1px solid #0f0f13 !important;
+            border-radius: 18px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 2px rgba(0,0,0,0.7), 0 8px 18px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.9) !important;
+        }
+
+        /* Skeuomorphic recessed */
+        .skeuo-recessed {
+            background: linear-gradient(180deg, #141418 0%, #1b1b20 100%) !important;
+            border: 1px solid #08080a !important;
+            border-radius: 14px !important;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.95), inset 0 1px 2px rgba(0,0,0,1), inset 0 -1px 1px rgba(255,255,255,0.025) !important;
+        }
+
+        /* Skeuomorphic button */
+        .skeuo-button {
+            background: linear-gradient(180deg, #2c2c33 0%, #1f1f24 100%) !important;
+            border: 1px solid #0d0d10 !important;
+            border-radius: 12px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.4) !important;
+            transition: all 0.15s ease !important;
+            cursor: pointer !important;
+        }
+        .skeuo-button:hover {
+            background: linear-gradient(180deg, #33333c 0%, #24242b 100%) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        /* Progress bars in dark theme */
+        .skeuo-progress-track {
+            height: 12px;
+            border-radius: 6px;
+            background: #121215;
+            border: 1px solid #08080a;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.9), inset 0 1px 2px rgba(0,0,0,1), inset 0 -1px 1px rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .skeuo-progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            position: relative;
+        }
+        .skeuo-progress-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 40%, rgba(0,0,0,0.2) 100%);
+        }
+        .fill-blue { background: #3b82f6; box-shadow: 0 0 12px rgba(59,130,246,0.5); }
+        .fill-purple { background: #8b5cf6; box-shadow: 0 0 12px rgba(139,92,246,0.5); }
+
+        /* LED indicator */
+        .skeuo-led {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #9effa9, #00c247 60%, #008a33 100%);
+            box-shadow: 0 0 6px rgba(0,194,71,0.8), 0 0 12px rgba(0,194,71,0.4), inset 0 1px 1px rgba(255,255,255,0.5), inset 0 -1px 1px rgba(0,0,0,0.5);
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        /* Badge */
+        .badge-new {
+            padding: 3px 7px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            background: linear-gradient(180deg, #fbbf24, #f59e0b);
+            color: #1a0f00;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.3), 0 2px 4px rgba(245,158,11,0.3);
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+            margin-left: 8px;
+        }
+
+        /* Card color variants */
+        .card-blue::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#3b82f6,transparent); opacity:0.7; border-radius:18px 18px 0 0; }
+        .card-purple::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#8b5cf6,transparent); opacity:0.7; border-radius:18px 18px 0 0; }
+        .card-orange::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#f97316,transparent); opacity:0.7; border-radius:18px 18px 0 0; }
+        .card-teal::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#14b8a6,transparent); opacity:0.7; border-radius:18px 18px 0 0; }
+
+        /* Icon wraps */
+        .icon-wrap-blue {
+            width: 46px; height: 46px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center;
+            background: linear-gradient(180deg, #1e2a48 0%, #162038 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.06), inset 0 -2px 4px rgba(0,0,0,0.8), 0 0 18px rgba(59,130,246,0.15);
+            border: 1px solid #0e172b;
+            font-size: 24px;
+        }
+        .icon-wrap-purple {
+            width: 46px; height: 46px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center;
+            background: linear-gradient(180deg, #2a1f40 0%, #1e1630 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), inset 0 -2px 4px rgba(0,0,0,0.8), 0 0 18px rgba(139,92,246,0.15);
+            border: 1px solid #160e28;
+            font-size: 24px;
+        }
+        .icon-wrap-orange {
+            width: 46px; height: 46px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center;
+            background: linear-gradient(180deg, #3d2616 0%, #2a1a0f 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), inset 0 -2px 4px rgba(0,0,0,0.8), 0 0 18px rgba(249,115,22,0.15);
+            border: 1px solid #1f1208;
+            font-size: 24px;
+        }
+        .icon-wrap-teal {
+            width: 46px; height: 46px; border-radius: 13px; display: inline-flex; align-items: center; justify-content: center;
+            background: linear-gradient(180deg, #10332f 0%, #0b2422 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), inset 0 -2px 4px rgba(0,0,0,0.8), 0 0 18px rgba(20,184,166,0.15);
+            border: 1px solid #071a18;
+            font-size: 24px;
+        }
+
+        /* Main content text colors */
+        h1, h2, h3, h4, h5, h6 { color: #e9e9ee !important; }
+        p, li, span, label { color: #e7e7ea; }
+
+        /* Streamlit elements dark overrides */
+        [data-testid="stMetricValue"] { color: #fff !important; }
+        [data-testid="stMetricLabel"] { color: var(--muted) !important; }
+        [data-testid="stMetricDelta"] svg { fill: #2dd4bf !important; }
+        
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 2px;
+            background: linear-gradient(180deg, #141418 0%, #1b1b20 100%) !important;
+            border-radius: 14px;
+            padding: 4px;
+            border: 1px solid #08080a;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.95);
+        }
+        .stTabs [data-baseweb="tab"] {
+            background: transparent !important;
+            color: var(--muted) !important;
+            border-radius: 10px !important;
+            border: none !important;
+            font-weight: 500 !important;
+        }
+        .stTabs [aria-selected="true"] {
+            background: linear-gradient(180deg, #2c2c33 0%, #1f1f24 100%) !important;
+            color: #fff !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 3px 8px rgba(0,0,0,0.4) !important;
+        }
+        .stTabs [data-baseweb="tab-panel"] {
+            background: transparent !important;
+        }
+
+        /* Text inputs dark */
+        [data-testid="stTextInput"] input, textarea, [data-baseweb="select"] {
+            background: linear-gradient(180deg, #141418 0%, #1b1b20 100%) !important;
+            border: 1px solid #08080a !important;
+            color: #e7e7ea !important;
+            border-radius: 12px !important;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.6) !important;
+        }
+        [data-testid="stTextInput"] label, [data-testid="stTextArea"] label,
+        [data-testid="stSelectbox"] label, [data-testid="stMultiSelect"] label,
+        [data-testid="stNumberInput"] label, [data-testid="stDateInput"] label {
+            color: var(--muted) !important;
+        }
+
+        /* Buttons in main content */
+        .stButton > button {
+            background: linear-gradient(180deg, #2c2c33 0%, #1f1f24 100%) !important;
+            border: 1px solid #0d0d10 !important;
+            border-radius: 12px !important;
+            color: #e7e7ea !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.4) !important;
+            transition: all 0.15s ease !important;
+            font-family: 'Geist', system-ui, sans-serif !important;
+        }
+        .stButton > button:hover {
+            background: linear-gradient(180deg, #33333c 0%, #24242b 100%) !important;
+            transform: translateY(-1px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 2px rgba(0,0,0,0.6), 0 5px 14px rgba(0,0,0,0.5) !important;
+            color: #fff !important;
+        }
+        .stButton > button:active {
+            background: linear-gradient(180deg, #1a1a1f 0%, #212128 100%) !important;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.9), inset 0 -1px 1px rgba(255,255,255,0.02) !important;
+            transform: translateY(0px);
+        }
+
+        /* Expander dark */
+        [data-testid="stExpander"] {
+            background: linear-gradient(180deg, #30313a 0%, #23232a 100%) !important;
+            border: 1px solid #0f0f13 !important;
+            border-radius: 16px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+        [data-testid="stExpander"] summary { color: #e7e7ea !important; }
+        [data-testid="stExpander"] svg { fill: var(--muted) !important; }
+
+        /* Alerts / info / warning / success / error */
+        [data-testid="stAlert"] {
+            background: linear-gradient(180deg, #30313a 0%, #23232a 100%) !important;
+            border: 1px solid #0f0f13 !important;
+            border-radius: 14px !important;
+            color: #e7e7ea !important;
+        }
+
+        /* Progress bar */
+        [data-testid="stProgress"] > div > div {
+            background: #121215 !important;
+            border-radius: 6px !important;
+        }
+
+        /* Divider */
+        [data-testid="stMarkdownContainer"] hr, hr {
+            border-color: rgba(255,255,255,0.06) !important;
+        }
+
+        /* File uploader */
+        [data-testid="stFileUploader"] {
+            background: linear-gradient(180deg, #141418 0%, #1b1b20 100%) !important;
+            border: 1px dashed #3b82f6 !important;
+            border-radius: 14px !important;
+            padding: 20px !important;
+        }
+        [data-testid="stFileUploader"] label { color: var(--muted) !important; }
+
+        /* Download button */
+        [data-testid="stDownloadButton"] button {
+            background: linear-gradient(180deg, #1e2a48 0%, #162038 100%) !important;
+            border: 1px solid #0e172b !important;
+            color: #60a5fa !important;
+        }
+
+        /* Card click overlay ─────────────────────────────────────────── */
         .element-container:has(.action-card) + .element-container {
-            transform: translateY(-270px);
-            margin-bottom: -270px;
+            transform: translateY(-160px);
+            margin-bottom: -160px;
             z-index: 100;
             pointer-events: none;
         }
@@ -75,8 +435,8 @@ st.markdown("""
             pointer-events: all;
         }
         .element-container:has(.action-card) + .element-container [data-testid="stButton"] button {
-            height: 270px !important;
-            min-height: 270px !important;
+            height: 160px !important;
+            min-height: 160px !important;
             width: 100% !important;
             background: transparent !important;
             border: none !important;
@@ -86,8 +446,8 @@ st.markdown("""
         }
 
         .element-container:has(.dash-card) + .element-container {
-            transform: translateY(-140px);
-            margin-bottom: -140px;
+            transform: translateY(-80px);
+            margin-bottom: -80px;
             z-index: 100;
             pointer-events: none;
         }
@@ -95,14 +455,58 @@ st.markdown("""
             pointer-events: all;
         }
         .element-container:has(.dash-card) + .element-container [data-testid="stButton"] button {
-            height: 140px !important;
-            min-height: 140px !important;
+            height: 80px !important;
+            min-height: 80px !important;
             width: 100% !important;
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
             cursor: pointer !important;
             opacity: 0 !important;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #2a2a30; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        /* Caption text */
+        [data-testid="stCaptionContainer"] { color: var(--muted) !important; }
+
+        /* Metric cards */
+        [data-testid="stMetric"] {
+            background: linear-gradient(180deg, #30313a 0%, #23232a 100%) !important;
+            border: 1px solid #0f0f13 !important;
+            border-radius: 14px !important;
+            padding: 16px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+
+        /* Selectbox dropdown */
+        [data-baseweb="popover"] {
+            background: #23232a !important;
+            border: 1px solid #0f0f13 !important;
+        }
+        [data-baseweb="menu"] {
+            background: #23232a !important;
+        }
+        [data-baseweb="menu"] li {
+            color: #e7e7ea !important;
+        }
+        [data-baseweb="menu"] li:hover {
+            background: #30313a !important;
+        }
+
+        /* Radio buttons */
+        [data-testid="stRadio"] label { color: var(--muted) !important; }
+        [data-testid="stCheckbox"] label { color: #e7e7ea !important; }
+
+        /* Form */
+        [data-testid="stForm"] {
+            background: linear-gradient(180deg, var(--panel-top) 0%, var(--panel-bot) 100%) !important;
+            border: 1px solid #0b0b0d !important;
+            border-radius: 24px !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.5) !important;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -127,8 +531,8 @@ def auth_page():
     col1, col2 = st.columns([1, 1])
     
     with col1:
-        st.markdown("<h1 style='text-align: center; color: #667eea; font-size: 40px;'>🧠 CareerAI</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #666; font-size: 16px;'>AI Resume Screening & Career Recommendation</p>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center; color: #60a5fa; font-size: 40px; text-shadow: 0 1px 0 rgba(255,255,255,0.05), 0 -1px 1px rgba(0,0,0,0.85);'>🧠 CareerAI</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #9a9aa3; font-size: 18px;'>AI Resume Screening & Career Recommendation</p>", unsafe_allow_html=True)
     
     st.markdown("<br><br>", unsafe_allow_html=True)
     
@@ -167,20 +571,28 @@ def auth_page():
 def dashboard():
     # Sidebar Navigation
     with st.sidebar:
-        st.markdown("---")
-        st.markdown(f"### 👤 {st.session_state.user}")
-        st.markdown("---")
+        # Profile section with LED indicator
+        st.markdown(f"""
+            <div style='background: linear-gradient(180deg, #222227 0%, #1c1c21 100%); border: 1px solid #2a2a30; padding: 12px; border-radius: 16px; margin-bottom: 30px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+                <div style='width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #2e2e36, #24242b); font-size: 22px; color: #9a9aa3; box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 2px 5px rgba(0,0,0,0.5); border: 1px solid #1a1a1f;'><i class='ph ph-user'></i></div>
+                <div style='flex: 1; min-width: 0;'>
+                    <div style='font-weight: 600; font-size: 16px; color: #f0f0f3;'>{st.session_state.user}</div>
+                    <div style='font-size: 13px; color: #9a9aa3; margin-top: 3px; display: flex; align-items: center; gap: 4px;'><span style='width: 6px; height: 6px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 6px #22c55e;'></span>Online</div>
+                </div>
+                <div style='width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #1f1f24; color: #666; border: 1px solid #141418;'><i class='ph-fill ph-dots-three'></i></div>
+            </div>
+        """, unsafe_allow_html=True)
         
-        st.markdown("**📌 Core Features**")
+        st.markdown("<p style='font-size: 12px; font-weight: 700; color: #666; letter-spacing: 1px; margin-bottom: 8px; margin-top: 10px;'>CORE FEATURES</p>", unsafe_allow_html=True)
         ALL_CORE = [
             "Home",
-            "📄 Upload & Scan",
-            "📊 Skill Gap Analysis",
-            "🛣️ Career Roadmap",
-            "📝 Resume Maker",
-            "📚 Learning Path",
-            "⭐ STAR Questions",
-            "🎯 ATS Score",
+            "Upload & Scan",
+            "Skill Gap Analysis",
+            "Career Roadmap",
+            "Resume Maker",
+            "Learning Path",
+            "STAR Questions",
+            "ATS Score",
         ]
         ALL_TOOLS = [
             "Resume History",
@@ -199,7 +611,7 @@ def dashboard():
                 st.rerun()
 
         st.markdown("---")
-        st.markdown("**🔧 Tools**")
+        st.markdown("<p style='font-size: 12px; font-weight: 700; color: #666; letter-spacing: 1px; margin-bottom: 8px; margin-top: 20px;'>TOOLS</p>", unsafe_allow_html=True)
         for page in ALL_TOOLS:
             if st.button(page, key=f"nav_{page}", use_container_width=True):
                 st.session_state.nav_target = page
@@ -214,188 +626,170 @@ def dashboard():
         user_data = get_user_profile(st.session_state.user)
 
 
-        col_main, col_sidebar = st.columns([2.5, 1], gap="medium")
-
-        with col_main:
+        if True:
             # Welcome Section
             user_name = user_data['name'] if user_data else "User"
+            
+            # Welcome Panel
             st.markdown(
-                f"<h1 style='font-size: 36px; font-weight: bold; margin-bottom: 10px;'>Welcome, {user_name}! 🚀</h1>",
-                unsafe_allow_html=True
-            )
-            st.markdown(
-                "<p style='font-size: 18px; color: #666; margin-bottom: 20px;'>Your career journey <b>starts here</b>.</p>",
-                unsafe_allow_html=True
+                f"""<div class='main-panel' style='padding: 20px 24px;'>
+                    <div style='display: flex; justify-content: space-between; align-items: center;'>
+                        <div>
+                            <h1 style='font-size: 30px; font-weight: 700; margin-bottom: 4px; color: #f5f5f7;'>Welcome, {user_name}!</h1>
+                            <p style='font-size: 16px; color: #9a9aa3; margin: 0;'>Ready to advance your career today?</p>
+                        </div>
+                        <div style='display: flex; gap: 12px;'>
+                            <div style='width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #222227, #1c1c21); border: 1px solid #2a2a30; box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: #9a9aa3;'><i class='ph ph-bell'></i></div>
+                            <div style='width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #222227, #1c1c21); border: 1px solid #2a2a30; box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: #9a9aa3;'><i class='ph ph-gear'></i></div>
+                        </div>
+                    </div>
+                </div>""", unsafe_allow_html=True
             )
             
-            if user_data:
-                st.markdown(
-                    "<div style='background: #f0f7ff; border-left: 4px solid #667eea; padding: 15px; border-radius: 5px; margin-bottom: 20px;'><p style='margin: 0; color: #333;'><b>Congratulations, your account has been successfully created.</b></p><p style='margin: 5px 0 0 0; color: #666;'>Let's take the next step!</p></div>",
-                    unsafe_allow_html=True
-                )
-            
-            # What would you like to do today
-            st.markdown(
-                "<h3 style='font-size: 20px; font-weight: bold; margin-bottom: 20px; margin-top: 30px;'>What would you like to do today?</h3>",
-                unsafe_allow_html=True
-            )
+            # Action Cards Panel
+            st.markdown("<div class='main-panel'>", unsafe_allow_html=True)
+            st.markdown("<div class='main-panel-title'>What would you like to do today?</div>", unsafe_allow_html=True)
             
             col_a, col_b, col_c, col_d = st.columns(4, gap="small")
-            
             with col_a:
-                st.markdown(
-                    """
-                    <div class='action-card' style='background: linear-gradient(135deg, #6ba3f5 0%, #6d5dd8 100%); 
-                                padding: 30px 20px; border-radius: 15px; text-align: center; 
-                                color: white; min-height: 270px; display: flex; flex-direction: column; 
-                                justify-content: center; box-shadow: 0 4px 15px rgba(107, 163, 245, 0.3);'>
-                    <p style='font-size: 50px; margin: 0 0 12px 0;'>📄</p>
-                    <h4 style='font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Upload Resume</h4>
-                    <p style='font-size: 12px; margin: 0; line-height: 1.5; opacity: 0.95;'>Upload and analyze your resume to get started.</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                st.markdown("""
+                    <div class='action-card card-blue' style='padding: 20px; height: 160px; display: flex; flex-direction: column;'>
+                        <div style='display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;'>
+                            <div class='icon-wrap icon-blue'><i class='ph ph-cloud-arrow-up'></i></div>
+                            <div style='width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #1c1c21; border: 1px solid #2a2a30; color: #a1a1ac;'><i class='ph ph-caret-right'></i></div>
+                        </div>
+                        <h4 style='font-size: 16px; font-weight: 600; margin: 0 0 4px 0; color: #f5f5f7;'>Upload Resume</h4>
+                        <p style='font-size: 14px; margin: 0; line-height: 1.4; color: #7a7a85;'>Scan and analyze your resume</p>
+                    </div>""", unsafe_allow_html=True)
                 if st.button("Go to Upload", key="card_btn_upload", use_container_width=True):
-                    st.session_state.nav_target = "📄 Upload & Scan"
+                    st.session_state.nav_target = "Upload & Scan"
                     st.rerun()
-            
             with col_b:
-                st.markdown(
-                    """
-                    <div class='action-card' style='background: linear-gradient(135deg, #b991f5 0%, #d05fd8 100%); 
-                                padding: 30px 20px; border-radius: 15px; text-align: center; 
-                                color: white; min-height: 270px; display: flex; flex-direction: column; 
-                                justify-content: center; box-shadow: 0 4px 15px rgba(185, 145, 245, 0.3);'>
-                    <p style='font-size: 50px; margin: 0 0 12px 0;'>🔍</p>
-                    <h4 style='font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Find Jobs</h4>
-                    <p style='font-size: 12px; margin: 0; line-height: 1.5; opacity: 0.95;'>Discover job opportunities that match your profile.</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                st.markdown("""
+                    <div class='action-card card-purple' style='padding: 20px; height: 160px; display: flex; flex-direction: column;'>
+                        <div style='display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;'>
+                            <div class='icon-wrap icon-purple'><i class='ph ph-suitcase'></i></div>
+                            <div style='width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #1c1c21; border: 1px solid #2a2a30; color: #a1a1ac;'><i class='ph ph-caret-right'></i></div>
+                        </div>
+                        <h4 style='font-size: 16px; font-weight: 600; margin: 0 0 4px 0; color: #f5f5f7;'>Find Jobs</h4>
+                        <p style='font-size: 14px; margin: 0; line-height: 1.4; color: #7a7a85;'>Discover matching opportunities</p>
+                    </div>""", unsafe_allow_html=True)
                 if st.button("Go to Find Jobs", key="card_btn_jobs", use_container_width=True):
                     st.session_state.nav_target = "Find Jobs"
                     st.rerun()
-            
             with col_c:
-                st.markdown(
-                    """
-                    <div class='action-card' style='background: linear-gradient(135deg, #f794b4 0%, #f5b05f 100%); 
-                                padding: 30px 20px; border-radius: 15px; text-align: center; 
-                                color: white; min-height: 270px; display: flex; flex-direction: column; 
-                                justify-content: center; box-shadow: 0 4px 15px rgba(247, 148, 180, 0.3);'>
-                    <p style='font-size: 50px; margin: 0 0 12px 0;'>🎓</p>
-                    <h4 style='font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Improve Skills</h4>
-                    <p style='font-size: 12px; margin: 0; line-height: 1.5; opacity: 0.95;'>Identify and develop skills needed for your target roles.</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                st.markdown("""
+                    <div class='action-card card-orange' style='padding: 20px; height: 160px; display: flex; flex-direction: column;'>
+                        <div style='display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;'>
+                            <div class='icon-wrap icon-orange'><i class='ph ph-trend-up'></i></div>
+                            <div style='width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #1c1c21; border: 1px solid #2a2a30; color: #a1a1ac;'><i class='ph ph-caret-right'></i></div>
+                        </div>
+                        <h4 style='font-size: 16px; font-weight: 600; margin: 0 0 4px 0; color: #f5f5f7;'>Improve Skills</h4>
+                        <p style='font-size: 14px; margin: 0; line-height: 1.4; color: #7a7a85;'>Close your skill gaps</p>
+                    </div>""", unsafe_allow_html=True)
                 if st.button("Go to Skill Gap", key="card_btn_skills", use_container_width=True):
-                    st.session_state.nav_target = "📊 Skill Gap Analysis"
+                    st.session_state.nav_target = "Skill Gap Analysis"
                     st.rerun()
-            
             with col_d:
-                st.markdown(
-                    """
-                    <div class='action-card' style='background: linear-gradient(135deg, #7de5d1 0%, #5dd8c8 100%); 
-                                padding: 30px 20px; border-radius: 15px; text-align: center; 
-                                color: white; min-height: 270px; display: flex; flex-direction: column; 
-                                justify-content: center; box-shadow: 0 4px 15px rgba(125, 229, 209, 0.3);'>
-                    <p style='font-size: 50px; margin: 0 0 12px 0;'>🎤</p>
-                    <h4 style='font-size: 16px; font-weight: bold; margin: 0 0 8px 0;'>Ace Interviews</h4>
-                    <p style='font-size: 12px; margin: 0; line-height: 1.5; opacity: 0.95;'>Practice with mock interviews and get feedback.</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                st.markdown("""
+                    <div class='action-card card-teal' style='padding: 20px; height: 160px; display: flex; flex-direction: column;'>
+                        <div style='display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;'>
+                            <div class='icon-wrap icon-teal'><i class='ph ph-target'></i></div>
+                            <div style='width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #1c1c21; border: 1px solid #2a2a30; color: #a1a1ac;'><i class='ph ph-caret-right'></i></div>
+                        </div>
+                        <h4 style='font-size: 16px; font-weight: 600; margin: 0 0 4px 0; color: #f5f5f7;'>Ace Interviews</h4>
+                        <p style='font-size: 14px; margin: 0; line-height: 1.4; color: #7a7a85;'>Practice with AI coach</p>
+                    </div>""", unsafe_allow_html=True)
                 if st.button("Go to STAR Questions", key="card_btn_interviews", use_container_width=True):
-                    st.session_state.nav_target = "⭐ STAR Questions"
+                    st.session_state.nav_target = "STAR Questions"
                     st.rerun()
+            st.markdown("</div>", unsafe_allow_html=True)
             
-            # Explore Dashboard Section
-            st.markdown(
-                "<h3 style='font-size: 20px; font-weight: bold; margin-top: 40px; margin-bottom: 20px;'>Explore Dashboard</h3>",
-                unsafe_allow_html=True
-            )
+            # Activity & Progress Panel
+            st.markdown("""<div class='main-panel'>
+                <div class='main-panel-title'>Activity & Progress</div>
+                <div style='display: grid; grid-template-columns: 1fr 1fr; gap: 16px;'>
+                    <div class='progress-box'>
+                        <div style='display: flex; justify-content: space-between; align-items: flex-end;'>
+                            <div style='font-size: 12px; font-weight: 700; color: #8a8a95; letter-spacing: 1px;'>PROFILE COMPLETION</div>
+                            <div style='display: flex; align-items: center; gap: 8px;'>
+                                <div style='font-size: 26px; font-weight: 700; color: #fff;'>85%</div>
+                                <div style='background: #064e3b; border: 1px solid #047857; color: #34d399; font-size: 12px; font-weight: 600; padding: 2px 6px; border-radius: 4px;'>+5%</div>
+                            </div>
+                        </div>
+                        <div class='progress-track'><div class='progress-fill-blue' style='width: 85%;'></div></div>
+                    </div>
+                    <div class='progress-box'>
+                        <div style='display: flex; justify-content: space-between; align-items: flex-end;'>
+                            <div style='font-size: 12px; font-weight: 700; color: #8a8a95; letter-spacing: 1px;'>INTERVIEW READINESS</div>
+                            <div style='display: flex; align-items: center; gap: 8px;'>
+                                <div style='font-size: 26px; font-weight: 700; color: #fff;'>62%</div>
+                                <div style='background: #78350f; border: 1px solid #b45309; color: #fbbf24; font-size: 12px; font-weight: 600; padding: 2px 6px; border-radius: 4px;'>+12%</div>
+                            </div>
+                        </div>
+                        <div class='progress-track'><div class='progress-fill-purple' style='width: 62%;'></div></div>
+                    </div>
+                </div>
+            </div>""", unsafe_allow_html=True)
+            
+            # Explore Dashboard
+            st.markdown("<div class='main-panel'>", unsafe_allow_html=True)
+            st.markdown("<div class='main-panel-title' style='margin-bottom: 20px;'>Explore Dashboard</div>", unsafe_allow_html=True)
             
             col_e, col_f, col_g, col_h = st.columns(4, gap="small")
             
             with col_e:
-                st.markdown(
-                    """
-                    <div class='dash-card' style='background: white; padding: 25px; border-radius: 10px; 
-                                text-align: center; border: 1px solid #e0e0e0; 
-                                min-height: 140px; display: flex; flex-direction: column; 
-                                justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
-                    <p style='font-size: 36px; margin: 0 0 10px 0;'>👤</p>
-                    <p style='font-size: 14px; font-weight: bold; margin: 0; color: #333;'>My Profile</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                st.markdown("""
+                    <div class='dash-card skeuo-button' style='padding: 16px 14px; height: 80px; display: flex; align-items: center; gap: 12px; background: linear-gradient(180deg, #222227, #1c1c21); border: 1px solid #2a2a30; border-radius: 12px;'>
+                        <div style='width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #111114; color: #f5f5f7; border: 1px solid #000; box-shadow: inset 0 1px 1px rgba(255,255,255,0.05); flex-shrink: 0;'><i class='ph ph-user'></i></div>
+                        <div style='flex: 1; min-width: 0;'>
+                            <p style='font-size: 15px; font-weight: 600; margin: 0 0 2px 0; color: #f5f5f7;'>My Profile</p>
+                            <p style='font-size: 13px; margin: 0; color: #7a7a85;'>View and edit</p>
+                        </div>
+                    </div>""", unsafe_allow_html=True)
                 if st.button("Go to Profile", key="dash_btn_profile", use_container_width=True):
                     st.session_state.nav_target = "Edit Profile"
                     st.rerun()
-            
             with col_f:
-                st.markdown(
-                    """
-                    <div class='dash-card' style='background: white; padding: 25px; border-radius: 10px; 
-                                text-align: center; border: 1px solid #e0e0e0; 
-                                min-height: 140px; display: flex; flex-direction: column; 
-                                justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-                                position: relative;'>
-                    <p style='font-size: 36px; margin: 0 0 10px 0;'>📊</p>
-                    <p style='font-size: 14px; font-weight: bold; margin: 0; color: #333;'>Skill Gap</p>
-                    <span style='position: absolute; top: 8px; right: 8px; background: #ff9800; 
-                                 color: white; font-size: 9px; padding: 2px 5px; border-radius: 3px; 
-                                 font-weight: bold;'>NEW!</span>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                st.markdown("""
+                    <div class='dash-card skeuo-button' style='padding: 16px 14px; height: 80px; display: flex; align-items: center; gap: 12px; background: linear-gradient(180deg, #222227, #1c1c21); border: 1px solid #2a2a30; border-radius: 12px; position: relative;'>
+                        <div style='width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #111114; color: #f5f5f7; border: 1px solid #000; box-shadow: inset 0 1px 1px rgba(255,255,255,0.05); flex-shrink: 0;'><i class='ph ph-chart-bar'></i></div>
+                        <div style='flex: 1; min-width: 0;'>
+                            <p style='font-size: 15px; font-weight: 600; margin: 0 0 2px 0; color: #f5f5f7;'>Skill Gap <span style='background: #fbbf24; color: #000; font-size: 11px; padding: 1px 4px; border-radius: 3px; font-weight: 700; margin-left: 4px;'>NEW</span></p>
+                            <p style='font-size: 13px; margin: 0; color: #7a7a85;'>Analyze skills</p>
+                        </div>
+                    </div>""", unsafe_allow_html=True)
                 if st.button("Go to Skill Gap", key="dash_btn_skillgap", use_container_width=True):
-                    st.session_state.nav_target = "📊 Skill Gap Analysis"
+                    st.session_state.nav_target = "Skill Gap Analysis"
                     st.rerun()
-            
             with col_g:
-                st.markdown(
-                    """
-                    <div class='dash-card' style='background: white; padding: 25px; border-radius: 10px; 
-                                text-align: center; border: 1px solid #e0e0e0; 
-                                min-height: 140px; display: flex; flex-direction: column; 
-                                justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
-                    <p style='font-size: 36px; margin: 0 0 10px 0;'>🎯</p>
-                    <p style='font-size: 14px; font-weight: bold; margin: 0; color: #333;'>Career Roadmap</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                st.markdown("""
+                    <div class='dash-card skeuo-button' style='padding: 16px 14px; height: 80px; display: flex; align-items: center; gap: 12px; background: linear-gradient(180deg, #222227, #1c1c21); border: 1px solid #2a2a30; border-radius: 12px;'>
+                        <div style='width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #111114; color: #f5f5f7; border: 1px solid #000; box-shadow: inset 0 1px 1px rgba(255,255,255,0.05); flex-shrink: 0;'><i class='ph ph-map-trifold'></i></div>
+                        <div style='flex: 1; min-width: 0;'>
+                            <p style='font-size: 15px; font-weight: 600; margin: 0 0 2px 0; color: #f5f5f7;'>Career Roadmap</p>
+                            <p style='font-size: 13px; margin: 0; color: #7a7a85;'>Plan your path</p>
+                        </div>
+                    </div>""", unsafe_allow_html=True)
                 if st.button("Go to Roadmap", key="dash_btn_roadmap", use_container_width=True):
-                    st.session_state.nav_target = "🛣️ Career Roadmap"
+                    st.session_state.nav_target = "Career Roadmap"
                     st.rerun()
-            
             with col_h:
-                st.markdown(
-                    """
-                    <div class='dash-card' style='background: white; padding: 25px; border-radius: 10px; 
-                                text-align: center; border: 1px solid #e0e0e0; 
-                                min-height: 140px; display: flex; flex-direction: column; 
-                                justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
-                    <p style='font-size: 36px; margin: 0 0 10px 0;'>📈</p>
-                    <p style='font-size: 14px; font-weight: bold; margin: 0; color: #333;'>Insights & Reports</p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+                st.markdown("""
+                    <div class='dash-card skeuo-button' style='padding: 16px 14px; height: 80px; display: flex; align-items: center; gap: 12px; background: linear-gradient(180deg, #222227, #1c1c21); border: 1px solid #2a2a30; border-radius: 12px;'>
+                        <div style='width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #111114; color: #f5f5f7; border: 1px solid #000; box-shadow: inset 0 1px 1px rgba(255,255,255,0.05); flex-shrink: 0;'><i class='ph ph-chart-line-up'></i></div>
+                        <div style='flex: 1; min-width: 0;'>
+                            <p style='font-size: 15px; font-weight: 600; margin: 0 0 2px 0; color: #f5f5f7;'>Insights & Reports</p>
+                            <p style='font-size: 13px; margin: 0; color: #7a7a85;'>Track progress</p>
+                        </div>
+                    </div>""", unsafe_allow_html=True)
                 if st.button("Go to Analytics", key="dash_btn_analytics", use_container_width=True):
                     st.session_state.nav_target = "Resume Analytics"
                     st.rerun()
-        
-        # Right Sidebar Profile
-        with col_sidebar:
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+        # Right Sidebar Profile removed for full-width layout
+        if False:
             if user_data:
                 # Get latest resume score
                 conn = sqlite3.connect("users.db")
@@ -408,13 +802,13 @@ def dashboard():
                 # Profile Card
                 st.markdown(
                     f"""
-                    <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                                color: white; padding: 25px; border-radius: 12px; text-align: center;
-                                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);'>
+                    <div style='background: linear-gradient(180deg, #30313a 0%, #23232a 100%); 
+                                color: #e7e7ea; padding: 25px; border-radius: 18px; text-align: center;
+                                border: 1px solid #0f0f13; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 2px rgba(0,0,0,0.7), 0 8px 18px rgba(0,0,0,0.45);'>
                     <p style='font-size: 48px; margin: 0 0 15px 0;'>👤</p>
-                    <h3 style='margin: 0 0 5px 0; font-size: 18px; font-weight: bold;'>{user_data['name']}</h3>
-                    <p style='margin: 0 0 3px 0; font-size: 13px; opacity: 0.9; font-weight: 500;'>{user_data['job_title']}</p>
-                    <p style='margin: 0; font-size: 11px; opacity: 0.8;'>{user_data['education']}</p>
+                    <h3 style='margin: 0 0 5px 0; font-size: 20px; font-weight: bold;'>{user_data['name']}</h3>
+                    <p style='margin: 0 0 3px 0; font-size: 15px; opacity: 0.9; font-weight: 500;'>{user_data['job_title']}</p>
+                    <p style='margin: 0; font-size: 13px; opacity: 0.8;'>{user_data['education']}</p>
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -426,12 +820,12 @@ def dashboard():
                 st.markdown(
                     f"""
                     <div style='text-align: center;'>
-                    <p style='font-size: 13px; margin: 0 0 3px 0; color: #333; font-weight: bold;'>Resume Score: <span style='font-size: 20px; color: #667eea;'>{score}</span></p>
-                    <div style='background: #e8e8e8; height: 6px; border-radius: 3px; margin-bottom: 8px; overflow: hidden;'>
+                    <p style='font-size: 15px; margin: 0 0 3px 0; color: #e7e7ea; font-weight: bold;'>Resume Score: <span style='font-size: 22px; color: #60a5fa;'>{score}</span></p>
+                    <div style='background: #121215; height: 6px; border-radius: 3px; border: 1px solid #08080a; box-shadow: inset 0 2px 4px rgba(0,0,0,0.9); margin-bottom: 8px; overflow: hidden;'>
                         <div style='background: linear-gradient(90deg, #4CAF50 0%, #FFC107 50%, #FF5722 100%); 
                                     height: 6px; border-radius: 3px; width: {score}%;'></div>
                     </div>
-                    <p style='font-size: 11px; margin: 0; color: #999;'>Completion Level</p>
+                    <p style='font-size: 13px; margin: 0; color: #9a9aa3;'>Completion Level</p>
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -455,7 +849,7 @@ def dashboard():
                 # Resume History
                 st.markdown(
                     """
-                    <div style='font-size: 13px; font-weight: bold; color: #333; margin-bottom: 8px;'>
+                    <div style='font-size: 15px; font-weight: bold; color: #e7e7ea; margin-bottom: 8px;'>
                     📋 Resume History
                     </div>
                     """,
@@ -464,8 +858,8 @@ def dashboard():
                 
                 st.markdown(
                     """
-                    <div style='background: #f5f5f5; padding: 10px 12px; border-radius: 6px; 
-                                font-size: 12px; color: #666; margin-bottom: 12px; cursor: pointer;'>
+                    <div style='background: linear-gradient(180deg, #141418 0%, #1b1b20 100%); padding: 10px 12px; border-radius: 10px; 
+                                font-size: 14px; color: #9a9aa3; border: 1px solid #08080a; box-shadow: inset 0 2px 5px rgba(0,0,0,0.6); margin-bottom: 12px; cursor: pointer;'>
                     📄 Upload Resume
                     </div>
                     """,
@@ -474,20 +868,20 @@ def dashboard():
                 
                 # Skills & Features
                 st.markdown(
-                    """<p style='font-size: 12px; font-weight: bold; margin: 15px 0 8px 0; color: #667eea;'>
+                    """<p style='font-size: 14px; font-weight: bold; margin: 15px 0 8px 0; color: #60a5fa;'>
                     📊 Skill Gap Analysis
-                    <span style='background: #ff9800; color: white; padding: 1px 4px; border-radius: 2px; font-size: 9px; margin-left: 4px;'>NEW!</span>
+                    <span style='' class='badge-new'>NEW</span>
                     </p>""",
                     unsafe_allow_html=True
                 )
                 
                 st.markdown(
-                    "<p style='font-size: 12px; font-weight: bold; margin: 12px 0 8px 0; color: #333;'>🎯 Career Roadmap</p>",
+                    "<p style='font-size: 14px; font-weight: bold; margin: 12px 0 8px 0; color: #e7e7ea;'>🎯 Career Roadmap</p>",
                     unsafe_allow_html=True
                 )
                 
                 st.markdown(
-                    "<p style='font-size: 12px; font-weight: bold; margin: 12px 0 8px 0; color: #333;'>🎤 Mock Interviews</p>",
+                    "<p style='font-size: 14px; font-weight: bold; margin: 12px 0 8px 0; color: #e7e7ea;'>🎤 Mock Interviews</p>",
                     unsafe_allow_html=True
                 )
                 
@@ -496,10 +890,10 @@ def dashboard():
                 # College Stream Button
                 st.markdown(
                     """
-                    <div style='background: #e8f0f7; padding: 12px; border-radius: 8px; 
-                                text-align: center; cursor: pointer; border: 1px solid #d0d0d0;'>
-                    <p style='font-size: 12px; font-weight: bold; margin: 0; color: #667eea;'>
-                    🎓 College Streom  <span style='font-size: 14px;'>➜</span>
+                    <div style='background: linear-gradient(180deg, #2c2c33 0%, #1f1f24 100%); padding: 12px; border-radius: 12px; 
+                                text-align: center; cursor: pointer; border: 1px solid #0d0d10; box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 3px 8px rgba(0,0,0,0.4);'>
+                    <p style='font-size: 14px; font-weight: bold; margin: 0; color: #60a5fa;'>
+                    🎓 College Streom  <span style='font-size: 16px;'>➜</span>
                     </p>
                     </div>
                     """,
@@ -527,10 +921,10 @@ def dashboard():
             with col1:
                 st.markdown(
                     f"""
-                    <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;'>
-                    <p style='margin: 0; font-size: 12px; opacity: 0.9;'>Overall Score</p>
-                    <p style='margin: 8px 0 0 0; font-size: 28px; font-weight: bold;'>{resume_score}</p>
-                    <p style='margin: 4px 0 0 0; font-size: 11px;'>/100</p>
+                    <div style='background: linear-gradient(180deg, #30313a 0%, #23232a 100%); color: #e7e7ea; padding: 20px; border-radius: 16px; text-align: center; border: 1px solid #0f0f13; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 18px rgba(0,0,0,0.45);'>
+                    <p style='margin: 0; font-size: 14px; opacity: 0.9;'>Overall Score</p>
+                    <p style='margin: 8px 0 0 0; font-size: 30px; font-weight: bold;'>{resume_score}</p>
+                    <p style='margin: 4px 0 0 0; font-size: 13px;'>/100</p>
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -540,10 +934,10 @@ def dashboard():
                 ats_score = int(resume_score * 0.85)  # ATS typically scores lower
                 st.markdown(
                     f"""
-                    <div style='background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;'>
-                    <p style='margin: 0; font-size: 12px; opacity: 0.9;'>ATS Compatibility</p>
-                    <p style='margin: 8px 0 0 0; font-size: 28px; font-weight: bold;'>{ats_score}%</p>
-                    <p style='margin: 4px 0 0 0; font-size: 11px;'>Parser-friendly</p>
+                    <div style='background: linear-gradient(180deg, #30313a 0%, #23232a 100%); color: #e7e7ea; padding: 20px; border-radius: 16px; text-align: center; border: 1px solid #0f0f13; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 18px rgba(0,0,0,0.45);'>
+                    <p style='margin: 0; font-size: 14px; opacity: 0.9;'>ATS Compatibility</p>
+                    <p style='margin: 8px 0 0 0; font-size: 30px; font-weight: bold;'>{ats_score}%</p>
+                    <p style='margin: 4px 0 0 0; font-size: 13px;'>Parser-friendly</p>
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -553,10 +947,10 @@ def dashboard():
                 keyword_match = int(resume_score * 0.82)
                 st.markdown(
                     f"""
-                    <div style='background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;'>
-                    <p style='margin: 0; font-size: 12px; opacity: 0.9;'>Keyword Match</p>
-                    <p style='margin: 8px 0 0 0; font-size: 28px; font-weight: bold;'>{keyword_match}%</p>
-                    <p style='margin: 4px 0 0 0; font-size: 11px;'>Industry terms</p>
+                    <div style='background: linear-gradient(180deg, #30313a 0%, #23232a 100%); color: #e7e7ea; padding: 20px; border-radius: 16px; text-align: center; border: 1px solid #0f0f13; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 18px rgba(0,0,0,0.45);'>
+                    <p style='margin: 0; font-size: 14px; opacity: 0.9;'>Keyword Match</p>
+                    <p style='margin: 8px 0 0 0; font-size: 30px; font-weight: bold;'>{keyword_match}%</p>
+                    <p style='margin: 4px 0 0 0; font-size: 13px;'>Industry terms</p>
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -566,10 +960,10 @@ def dashboard():
                 formatting_score = int(resume_score * 0.90)
                 st.markdown(
                     f"""
-                    <div style='background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;'>
-                    <p style='margin: 0; font-size: 12px; opacity: 0.9;'>Formatting</p>
-                    <p style='margin: 8px 0 0 0; font-size: 28px; font-weight: bold;'>{formatting_score}%</p>
-                    <p style='margin: 4px 0 0 0; font-size: 11px;'>Structure score</p>
+                    <div style='background: linear-gradient(180deg, #30313a 0%, #23232a 100%); color: #e7e7ea; padding: 20px; border-radius: 16px; text-align: center; border: 1px solid #0f0f13; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 18px rgba(0,0,0,0.45);'>
+                    <p style='margin: 0; font-size: 14px; opacity: 0.9;'>Formatting</p>
+                    <p style='margin: 8px 0 0 0; font-size: 30px; font-weight: bold;'>{formatting_score}%</p>
+                    <p style='margin: 4px 0 0 0; font-size: 13px;'>Structure score</p>
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -866,7 +1260,7 @@ def dashboard():
                 st.write(f"**Pipeline Conversion:** {conversion_rate:.1f}% (advancing through stages)")
     
     # FEATURE 1: UPLOAD & SCAN
-    elif choice == "📄 Upload & Scan":
+    elif choice == "Upload & Scan":
         st.header("📄 Upload & Scan Your Resume")
         st.write("Upload a PDF resume to extract your profile. **All other features read from this scan.**")
         
@@ -967,7 +1361,7 @@ def dashboard():
             st.info("📭 No resumes uploaded yet")
     
     # FEATURE 2: SKILL GAP ANALYSIS
-    elif choice == "📊 Skill Gap Analysis":
+    elif choice == "Skill Gap Analysis":
         st.header("📊 Skill Gap Analysis")
         st.write("Compare your skills against industry standards for your target role.")
         
@@ -1037,7 +1431,7 @@ def dashboard():
             st.warning("⚠️ Please upload a resume first")
     
     # FEATURE 3: CAREER ROADMAP
-    elif choice == "🛣️ Career Roadmap":
+    elif choice == "Career Roadmap":
         st.header("🛣️ Your Career Roadmap")
         st.write("A visual guide to your professional growth.")
         
@@ -1063,7 +1457,7 @@ def dashboard():
                 st.info("No roadmap data available for this specific role yet.")
 
     # FEATURE 4: RESUME MAKER
-    elif choice == "📝 Resume Maker":
+    elif choice == "Resume Maker":
         st.header("📝 Standard Resume Maker")
         st.write("Build a clean, ATS-friendly resume matching Jake's template.")
         
@@ -1146,7 +1540,7 @@ def dashboard():
                 )
 
     # FEATURE 5: LEARNING PATH
-    elif choice == "📚 Learning Path":
+    elif choice == "Learning Path":
         st.header("📚 Your Learning Path")
         st.write("Personalized resource map to bridge your skill gaps.")
         
@@ -1177,16 +1571,16 @@ def dashboard():
                                 badge = get_platform_badge(res["platform"])
                                 st.markdown(
                                     f"""
-                                    <div style='background: white; padding: 10px; border-radius: 5px; border-left: 5px solid {badge['color']}; margin-bottom: 10px; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;'>
+                                    <div style='background: linear-gradient(180deg, #30313a 0%, #23232a 100%); padding: 10px; border-radius: 12px; border-left: 4px solid {badge['color']}; margin-bottom: 10px; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;'>
                                         <p style='margin: 0; font-weight: bold;'>{badge['emoji']} {res['title']}</p>
-                                        <p style='margin: 5px 0; font-size: 13px;'>{res['platform']} • {res['hours']} Hours</p>
-                                        <a href='{res['url']}' target='_blank' style='text-decoration: none; color: #667eea; font-weight: bold;'>Go to Course ➜</a>
+                                        <p style='margin: 5px 0; font-size: 15px;'>{res['platform']} • {res['hours']} Hours</p>
+                                        <a href='{res['url']}' target='_blank' style='text-decoration: none; color: #3b82f6; font-weight: bold;'>Go to Course ➜</a>
                                     </div>
                                     """, unsafe_allow_html=True
                                 )
 
     # FEATURE 6: STAR QUESTIONS
-    elif choice == "⭐ STAR Questions":
+    elif choice == "STAR Questions":
         st.header("⭐ STAR Interview Questions")
         st.write("Behavioral questions tailored to your profile and target role.")
         
@@ -1215,7 +1609,7 @@ def dashboard():
                         st.success("Draft saved!")
 
     # FEATURE 7: ATS SCORE
-    elif choice == "🎯 ATS Score":
+    elif choice == "ATS Score":
         st.header("🎯 ATS Compatibility Score")
         st.write("How well does your resume perform against applicant tracking systems?")
         
@@ -1230,10 +1624,10 @@ def dashboard():
                 # Big Score Circle-ish
                 st.markdown(
                     f"""
-                    <div style='text-align: center; background: #667eea; color: white; padding: 40px; border-radius: 50%; width: 200px; height: 200px; display: flex; flex-direction: column; justify-content: center; margin: 0 auto;'>
-                        <p style='margin: 0; font-size: 14px;'>ATS SCORE</p>
+                    <div style='text-align: center; background: linear-gradient(180deg, #30313a 0%, #23232a 100%); color: #e7e7ea; padding: 40px; border-radius: 50%; border: 1px solid #0f0f13; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 18px rgba(0,0,0,0.45); width: 200px; height: 200px; display: flex; flex-direction: column; justify-content: center; margin: 0 auto;'>
+                        <p style='margin: 0; font-size: 16px;'>ATS SCORE</p>
                         <h1 style='margin: 0; font-size: 60px;'>{score_data['total_score']}</h1>
-                        <p style='margin: 0; font-size: 18px;'>Grade: {score_data['grade']}</p>
+                        <p style='margin: 0; font-size: 20px;'>Grade: {score_data['grade']}</p>
                     </div>
                     """, unsafe_allow_html=True
                 )
@@ -1293,7 +1687,7 @@ def dashboard():
             with col_star1:
                 st.markdown(
                     """
-                    <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px;'>
+                    <div style='background: linear-gradient(180deg, #30313a 0%, #23232a 100%); color: #e7e7ea; padding: 20px; border-radius: 16px; border: 1px solid #0f0f13; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 8px 18px rgba(0,0,0,0.45);'>
                     <h3 style='margin-top: 0;'>STAR Framework</h3>
                     <p><strong>S - Situation</strong><br/>Set the stage with context. What was the challenge?</p>
                     <p><strong>T - Task</strong><br/>What was your specific role and responsibility?</p>
@@ -1307,7 +1701,7 @@ def dashboard():
             with col_star2:
                 st.markdown(
                     """
-                    <div style='background: #f5f5f5; padding: 20px; border-radius: 12px;'>
+                    <div style='background: linear-gradient(180deg, #141418 0%, #1b1b20 100%); padding: 20px; border-radius: 14px; border: 1px solid #08080a; box-shadow: inset 0 2px 5px rgba(0,0,0,0.6); color: #e7e7ea;'>
                     <h4>Example Structure</h4>
                     <p><strong>❌ Weak:</strong> "I worked on a project with my team."</p>
                     <p><strong>✅ Strong:</strong> "When my startup was losing $50K/month due to poor user retention (S), I led a 3-person team to redesign the onboarding flow (T). I personally reduced the 15-step process to 3 steps using user research (A), increasing retention by 45% within 2 months (R)."</p>
@@ -1357,7 +1751,7 @@ def dashboard():
             with col_tips1:
                 st.markdown(
                     """
-                    <div style='background: #e3f2fd; padding: 15px; border-radius: 8px;'>
+                    <div style='background: linear-gradient(180deg, #1e2a48 0%, #162038 100%); padding: 15px; border-radius: 12px; border: 1px solid #0e172b; color: #e7e7ea;'>
                     <h4>⏱️ Timing Tip</h4>
                     <p>Aim for <strong>2-3 minutes max</strong>. Not too long!</p>
                     </div>
@@ -1367,7 +1761,7 @@ def dashboard():
             with col_tips2:
                 st.markdown(
                     """
-                    <div style='background: #f3e5f5; padding: 15px; border-radius: 8px;'>
+                    <div style='background: linear-gradient(180deg, #2a1f40 0%, #1e1630 100%); padding: 15px; border-radius: 12px; border: 1px solid #160e28; color: #e7e7ea;'>
                     <h4>📊 Metrics Matter</h4>
                     <p>Always quantify results: <strong>30% faster</strong>, <strong>$50K saved</strong>, <strong>2x growth</strong></p>
                     </div>
@@ -1377,7 +1771,7 @@ def dashboard():
             with col_tips3:
                 st.markdown(
                     """
-                    <div style='background: #e8f5e9; padding: 15px; border-radius: 8px;'>
+                    <div style='background: linear-gradient(180deg, #10332f 0%, #0b2422 100%); padding: 15px; border-radius: 12px; border: 1px solid #071a18; color: #e7e7ea;'>
                     <h4>🎯 Focus on YOU</h4>
                     <p>Don't blame teammates. Say <strong>"I"</strong> not <strong>"we"</strong> for actions.</p>
                     </div>
@@ -1526,7 +1920,7 @@ def dashboard():
                     with st.expander(f"**{i}. {question}**", expanded=False):
                         st.markdown(
                             f"""
-                            <div style='background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 15px;'>
+                            <div style='background: linear-gradient(180deg, #3d2616 0%, #2a1a0f 100%); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #1f1208; color: #e7e7ea;'>
                             <strong>🎯 What they want to know:</strong><br/>
                             This question assesses your [communication, teamwork, problem-solving, adaptability, resilience, growth mindset].
                             </div>
