@@ -1295,7 +1295,6 @@ def dashboard():
             st.session_state.resume_text = text
             
             st.success("✅ Resume Uploaded and Analyzed Successfully")
-            st.balloons()
             
             # Show results
             col1, col2, col3, col4 = st.columns(4)
